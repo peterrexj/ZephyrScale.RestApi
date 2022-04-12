@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -6,19 +6,37 @@
 		<LangVersion>latest</LangVersion>
 		<Authors>Peter Joseph</Authors>
 		<Copyright>Apache License 2.0</Copyright>
-		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/peterrexj/ZeyphrScale.RestApi</PackageProjectUrl>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/peterrexj/ZeyphrScale.RestApi</RepositoryUrl>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<RepositoryType>Public</RepositoryType>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<Title>ZeyphrScale Rest Api</Title>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageReleaseNotes>First Release - Rest Endpoints - Cloud and Server</PackageReleaseNotes>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<Description>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/product-description.txt"))</Description>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageTags>zeyphr scale rest automation c# browser api web nUnit test smartbear</PackageTags>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
 		<Version>1.0.0.0</Version>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Company>Peter Joseph</Company>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
@@ -32,9 +50,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="README.md">
+		<None Include="..\LICENSE">
 			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\README.md" Link="README.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
 
