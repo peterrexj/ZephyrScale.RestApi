@@ -7,8 +7,8 @@
 		<Authors>Peter Joseph</Authors>
 		<Copyright>Apache License 2.0</Copyright>
 		<PackageLicenseExpression></PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/peterrexj/Selenium.Essentials</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/peterrexj/Selenium.Essentials</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/peterrexj/ZeyphrScale.RestApi</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/peterrexj/ZeyphrScale.RestApi</RepositoryUrl>
 		<RepositoryType>Public</RepositoryType>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>

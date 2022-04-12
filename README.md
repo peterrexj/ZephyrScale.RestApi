@@ -104,7 +104,7 @@ The request and response objects are having proper DTOS (data transfer or model 
      - ProjectsInTestGet
      - ProjectsInJiraGet
 
-### Custom Control on the Service - Cloud / Server
+### Custom options to connect Service - Cloud / Server
 
 There are some level of custom customization available on the service that can be passed on via the constuctor.
 
