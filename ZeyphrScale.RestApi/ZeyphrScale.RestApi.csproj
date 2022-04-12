@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PackageId>ZeyphrScale.Rest.Sdk</PackageId>
+		<LangVersion>latest</LangVersion>
+		<Authors>Peter Joseph</Authors>
+		<Copyright>Apache License 2.0</Copyright>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/peterrexj/Selenium.Essentials</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/peterrexj/Selenium.Essentials</RepositoryUrl>
+		<RepositoryType>Public</RepositoryType>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Title>ZeyphrScale Rest Api</Title>
+		<PackageReleaseNotes>First Release - Rest Endpoints - Cloud and Server</PackageReleaseNotes>
+		<Description>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/product-description.txt"))</Description>
+		<PackageTags>zeyphr scale rest automation c# browser api web nUnit test smartbear</PackageTags>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Version>1.0.0.0</Version>
+		<Company>Peter Joseph</Company>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="TestAny.Essentials.Api" Version="1.0.5.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Dtos\Jira\" />
+		<Folder Include="Extensions\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+</Project>
