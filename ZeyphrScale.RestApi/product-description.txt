@@ -1,9 +1,7 @@
-﻿ZeyphrScale.Rest.Sdk
-====================
-
-Open SDK to connect to the Zeyphr Scale application using Rest endpoints. Manage your communication and easily retrieve and publish test cases, test cycle and execution results to Zephyr Scale. You can integrate with you existing automation solution or process that will manage
-
-Support both Server and Cloud based application.
+﻿SDK to connect to the Zeyphr Scale app using Zeyphr Scale's Rest endpoints. Manage your communication and easily retrieve and publish test cases, test cycle and execution results to Zephyr Scale. You can integrate with you existing automation solution or process that will manage these process.
+Support both Server and Cloud hosted Zeyphr Scale application.
+For more information on Cloud: https://support.smartbear.com/zephyr-scale-cloud/api-docs/
+For more information on Server: https://support.smartbear.com/zephyr-scale-server/api-docs/v1/
 
 The request and response objects are having proper DTOS (data transfer or model objects) defined within this package.
 
