@@ -29,6 +29,7 @@ namespace ZeyphrScale.RestApi.Service.OnPrem
         /// <param name="timeToSleepBetweenRetryInMilliseconds">Time to sleep in milliseconds between each time a call is retry (default value: '1000'). Applied only when requestRetryTimes is more than 1</param>
         /// <param name="assertResponseStatusOk">True/False whether the response code status from the server needs to be asserted for OK (default value 'true')</param>
         /// <param name="listOfResponseCodeOnFailureToRetry">Any of these status code matched from response will then use for retry the request. For example Proxy Authentication randomly failing can be then used to retry (default value 'null' which means it is not checking any response code for fail retry)</param>
+        /// <param name="requestTimeoutInSeconds">Control the total time to wait for any request made to the Zeyphr Scale server. Default time is set to 300 seconds and it can be increased if the data on the server is too many and requires more time to process to respond</param>
         public ZephyrScaleOnPremService(string appUrl,
             string serviceUsername,
             string servicePassword,
@@ -40,9 +41,13 @@ namespace ZeyphrScale.RestApi.Service.OnPrem
             int requestRetryTimes = 1,
             int timeToSleepBetweenRetryInMilliseconds = 1000,
             bool assertResponseStatusOk = true,
-            HttpStatusCode[] listOfResponseCodeOnFailureToRetry = null)
-                : base(appUrl, serviceUsername, servicePassword, zeyphrApiVersion, jiraApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
-                    requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk, listOfResponseCodeOnFailureToRetry)
+            HttpStatusCode[] listOfResponseCodeOnFailureToRetry = null,
+            int requestTimeoutInSeconds = 300)
+                : base(appUrl, serviceUsername, servicePassword, zeyphrApiVersion, jiraApiVersion, 
+                    folderSeparator, logPrefix, pageSizeSearchResult,
+                    requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, 
+                    assertResponseStatusOk, listOfResponseCodeOnFailureToRetry,
+                    requestTimeoutInSeconds)
         { }
 
         /// <summary>

@@ -1,1 +1,4 @@
-﻿First Release 1.0.0.0 - Rest Endpoints - Cloud and Server to connect Zeyphr Scale
+﻿Release 1.0.0.1
+- Ability to control the timeout on the request made to the server for every request
+
+First Release 1.0.0.0 - Rest Endpoints - Cloud and Server to connect Zeyphr Scale

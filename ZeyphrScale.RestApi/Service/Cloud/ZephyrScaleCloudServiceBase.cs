@@ -2,6 +2,7 @@
 using System.Net;
 using Pj.Library;
 using TestAny.Essentials.Api;
+using TestAny.Essentials.Core;
 using TestAny.Essentials.Core.Dtos.Api;
 
 namespace ZeyphrScale.RestApi.Service.Cloud
@@ -21,10 +22,13 @@ namespace ZeyphrScale.RestApi.Service.Cloud
             int requestRetryTimes,
             int timeToSleepBetweenRetryInMilliseconds,
             bool assertResponseStatusOk,
-            HttpStatusCode[] listOfResponseCodeOnFailureToRetry)
+            HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
+            int requestTimeoutInSeconds)
         {
-            SetBaseValues(appUrl, passwordAuthKey, restApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
-                requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk, listOfResponseCodeOnFailureToRetry);
+            SetBaseValues(appUrl, passwordAuthKey, restApiVersion, folderSeparator, 
+                logPrefix, pageSizeSearchResult, requestRetryTimes, 
+                timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk, 
+                listOfResponseCodeOnFailureToRetry, requestTimeoutInSeconds);
         }
 
         private void SetBaseValues(string appUrl,
@@ -36,7 +40,8 @@ namespace ZeyphrScale.RestApi.Service.Cloud
             int requestRetryTimes,
             int timeToSleepBetweenRetryInMilliseconds,
             bool assertResponseStatusOk,
-            HttpStatusCode[] listOfResponseCodeOnFailureToRetry)
+            HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
+            int requestTimeoutInSeconds)
         {
             if (appUrl.IsEmpty())
             {
@@ -59,6 +64,7 @@ namespace ZeyphrScale.RestApi.Service.Cloud
             TimeToSleepBetweenRetryInMilliseconds = timeToSleepBetweenRetryInMilliseconds;
             AssertResponseStatusOk = assertResponseStatusOk;
             ListOfResponseCodeOnFailureToRetry = listOfResponseCodeOnFailureToRetry;
+            TestAnyAppConfig.DefaultApiResponseTimeoutWaitPeriodInSeconds = requestTimeoutInSeconds;
         }
 
         public bool CanConnect

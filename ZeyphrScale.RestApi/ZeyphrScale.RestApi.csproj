@@ -18,24 +18,10 @@
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageReleaseNotes>First Release - Rest Endpoints - Cloud and Server</PackageReleaseNotes>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageLicenseExpression></PackageLicenseExpression>
 		<Description>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/product-description.txt"))</Description>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageLicenseExpression></PackageLicenseExpression>
-		<PackageTags>zeyphr scale rest automation c# browser api web nUnit test smartbear</PackageTags>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageLicenseExpression></PackageLicenseExpression>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageLicenseExpression></PackageLicenseExpression>
-		<Version>1.0.0.1</Version>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageLicenseExpression></PackageLicenseExpression>
+		<Version>1.0.0.2</Version>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Company>Peter Joseph</Company>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageLicenseExpression></PackageLicenseExpression>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>

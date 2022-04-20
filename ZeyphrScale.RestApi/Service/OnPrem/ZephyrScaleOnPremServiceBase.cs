@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using TestAny.Essentials.Api;
+using TestAny.Essentials.Core;
 
 namespace ZeyphrScale.RestApi.Service.OnPrem
 {
@@ -24,10 +25,14 @@ namespace ZeyphrScale.RestApi.Service.OnPrem
            int requestRetryTimes,
            int timeToSleepBetweenRetryInMilliseconds,
            bool assertResponseStatusOk,
-           HttpStatusCode[] listOfResponseCodeOnFailureToRetry)
+           HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
+           int requestTimeoutInSeconds)
         {
-            SetBaseValues(appUrl, serviceUsername, servicePassword, zeyphrApiVersion, jiraApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
-                requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk, listOfResponseCodeOnFailureToRetry);
+            SetBaseValues(appUrl, serviceUsername, servicePassword, zeyphrApiVersion, 
+                jiraApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
+                requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, 
+                assertResponseStatusOk, listOfResponseCodeOnFailureToRetry,
+                requestRetryTimes);
         }
 
         private void SetBaseValues(string appUrl,
@@ -41,7 +46,8 @@ namespace ZeyphrScale.RestApi.Service.OnPrem
             int requestRetryTimes,
             int timeToSleepBetweenRetryInMilliseconds,
             bool assertResponseStatusOk,
-            HttpStatusCode[] listOfResponseCodeOnFailureToRetry)
+            HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
+            int requestTimeoutInSeconds)
         {
             if (appUrl.IsEmpty())
             {
@@ -66,6 +72,7 @@ namespace ZeyphrScale.RestApi.Service.OnPrem
             TimeToSleepBetweenRetryInMilliseconds = timeToSleepBetweenRetryInMilliseconds;
             AssertResponseStatusOk = assertResponseStatusOk;
             ListOfResponseCodeOnFailureToRetry = listOfResponseCodeOnFailureToRetry;
+            TestAnyAppConfig.DefaultApiResponseTimeoutWaitPeriodInSeconds = requestTimeoutInSeconds;
         }
 
         public virtual bool CanConnect

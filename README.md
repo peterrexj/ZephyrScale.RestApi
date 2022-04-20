@@ -3,10 +3,14 @@ ZeyphrScale.Rest.Sdk
 
 SDK to connect to the Zeyphr Scale app using Zeyphr Scale's Rest endpoints. Manage your communication and easily retrieve and publish test cases, test cycle and execution results to Zephyr Scale. You can integrate with you existing automation solution or process that will manage these process.
 Support both Server and Cloud hosted Zeyphr Scale application.
-For more information on Cloud: https://support.smartbear.com/zephyr-scale-cloud/api-docs/
-For more information on Server: https://support.smartbear.com/zephyr-scale-server/api-docs/v1/
+
+For more information on Zeyhpr Scale cloud rest endpoints: https://support.smartbear.com/zephyr-scale-cloud/api-docs/
+
+For more information on Zeyphr Scale server rest endpoints: https://support.smartbear.com/zephyr-scale-server/api-docs/v1/
 
 The request and response objects are having proper DTOS (data transfer or model objects) defined within this package.
+
+Nuget package link: https://www.nuget.org/packages/ZeyphrScale.Rest.Sdk
 
 ## How to Use
 
@@ -117,6 +121,7 @@ There are some level of custom customization available on the service that can b
 6. timeToSleepBetweenRetryInMilliseconds - Time to sleep in milliseconds between each time a call is retry (default value: '1000'). Applied only when requestRetryTimes is more than 1
 7. assertResponseStatusOk - True/False whether the response code status from the server needs to be asserted for OK (default value 'true')
 8. listOfResponseCodeOnFailureToRetry - Any of these status code matched from response will then use for retry the request. For example Proxy Authentication randomly failing can be then used to retry (default value 'null' which means it is not checking any response code for fail retry)
+9. requestTimeoutInSeconds - Control the total time to wait for any request made to the Zeyphr Scale server. Default time is set to 300 seconds and it can be increased if the data on the server is too many and requires more time to process to respond
 
 A scenario where you have network issues and you want to retry operation, then try this
 ```C#
