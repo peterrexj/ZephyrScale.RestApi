@@ -32,7 +32,7 @@ namespace ZeyphrScale.RestApi.Service.OnPrem
                 jiraApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
                 requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, 
                 assertResponseStatusOk, listOfResponseCodeOnFailureToRetry,
-                requestRetryTimes);
+                requestTimeoutInSeconds);
         }
 
         private void SetBaseValues(string appUrl,
