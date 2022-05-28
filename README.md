@@ -1,33 +1,33 @@
-ZeyphrScale.Rest.Sdk
+ZephyrScale.Rest.Sdk
 ========
 
-SDK to connect to the Zeyphr Scale app using Zeyphr Scale's Rest endpoints. Manage your communication and easily retrieve and publish test cases, test cycle and execution results to Zephyr Scale. You can integrate with you existing automation solution or process that will manage these process.
-Support both Server and Cloud hosted Zeyphr Scale application.
+SDK to connect to the Zephyr Scale app using Zephyr Scale's Rest endpoints. Manage your communication and easily retrieve and publish test cases, test cycle and execution results to Zephyr Scale. You can integrate with you existing automation solution or process that will manage these process.
+Support both Server and Cloud hosted Zephyr Scale application.
 
 For more information on Zeyhpr Scale cloud rest endpoints: https://support.smartbear.com/zephyr-scale-cloud/api-docs/
 
-For more information on Zeyphr Scale server rest endpoints: https://support.smartbear.com/zephyr-scale-server/api-docs/v1/
+For more information on Zephyr Scale server rest endpoints: https://support.smartbear.com/zephyr-scale-server/api-docs/v1/
 
 The request and response objects are having proper DTOS (data transfer or model objects) defined within this package.
 
-Nuget package link: https://www.nuget.org/packages/ZeyphrScale.Rest.Sdk
+Nuget package link: https://www.nuget.org/packages/ZephyrScale.Rest.Sdk
 
 ## How to Use
 
 ### Connect to service
 
 ```C#
-     //Connect to cloud hosted Zeyphr Scale service
-     var zService = new ZepyhrScaleCloudService("app url", "user api token");
+     //Connect to cloud hosted Zephyr Scale service
+     var zService = new ZephyrScaleCloudService("app url", "user api token");
 
-     //Connect to server hosted Zeyphr Scale service
-     var zService = new ZepyhrScaleCloudService("app url", "username", "password");
+     //Connect to server hosted Zephyr Scale service
+     var zService = new ZephyrScaleOnPremService("app url", "username", "password");
 
      //Get a test case by Key
      var testCase = zService.TestCasesGet("POC-T1");
 
      //Create a new Test case
-     var newTestCase = ZeyphrOnPremService.TestCaseCreate(new TestCaseCreateRequest
+     var newTestCase = ZephyrOnPremService.TestCaseCreate(new TestCaseCreateRequest
                         {
                             ProjectKey = "PCO",
                             Folder = "/Automation",
@@ -113,20 +113,20 @@ Nuget package link: https://www.nuget.org/packages/ZeyphrScale.Rest.Sdk
 
 There are some level of custom customization available on the service that can be passed on via the constuctor.
 
-1. restApiVersion - Rest API version for the Zeyphr Service (default value: 'v2')
+1. restApiVersion - Rest API version for the Zephyr Service (default value: 'v2')
 2. folderSeparator - Folder separator string (default value: '/')
-3. logPrefix - Prefix text that will be added to all the logs generated from this service (default value: 'Zeyphr: ')
+3. logPrefix - Prefix text that will be added to all the logs generated from this service (default value: 'Zephyr: ')
 4. pageSizeSearchResult - Page size for search request (default value: '50')
 5. requestRetryTimes - Number of time to retry when there is a network failure (default value: '1'). You can increase the number of times to retry based on your infrastructure if there are chance for a request to fail randomly
 6. timeToSleepBetweenRetryInMilliseconds - Time to sleep in milliseconds between each time a call is retry (default value: '1000'). Applied only when requestRetryTimes is more than 1
 7. assertResponseStatusOk - True/False whether the response code status from the server needs to be asserted for OK (default value 'true')
 8. listOfResponseCodeOnFailureToRetry - Any of these status code matched from response will then use for retry the request. For example Proxy Authentication randomly failing can be then used to retry (default value 'null' which means it is not checking any response code for fail retry)
-9. requestTimeoutInSeconds - Control the total time to wait for any request made to the Zeyphr Scale server. Default time is set to 300 seconds and it can be increased if the data on the server is too many and requires more time to process to respond
+9. requestTimeoutInSeconds - Control the total time to wait for any request made to the Zephyr Scale server. Default time is set to 300 seconds and it can be increased if the data on the server is too many and requires more time to process to respond
 
 A scenario where you have network issues and you want to retry operation, then try this
 ```C#
-     //Connect to cloud hosted Zeyphr Scale service
-     var zService = new ZepyhrScaleCloudService("app url", "user api token",
+     //Connect to cloud hosted Zephyr Scale service
+     var zService = new ZephyrScaleCloudService("app url", "user api token",
           requestRetryTimes: 10,
           timeToSleepBetweenRetryInMilliseconds: 1500,
           assertResponseStatusOk: true,
@@ -160,13 +160,13 @@ FolderWithFullPath - this option will return you the list of folder but along wi
 
 ## Upcoming Features
 
-1. Zeyphr - Specflow integration module (automatically push results from Specflow to Zeyphr)
-2. Zeyphr - nUnit integration module (automatically push results from nUnit tests to Zeyphr)
-3. Zeyphr - Postman integration module (automatically push results from Postman tests to Zeyphr)
+1. Zephyr - Specflow integration module (automatically push results from Specflow to Zephyr)
+2. Zephyr - nUnit integration module (automatically push results from nUnit tests to Zephyr)
+3. Zephyr - Postman integration module (automatically push results from Postman tests to Zephyr)
 
-These features will help to track the automated test execution back to Zeyphr and you will have more control on each of the test cases from
-- Control on what you to push - whether you want to push everything to Zeyphr or only for those test cases you are interested from a list of test you have
-- Control on where you push - for a single test in nUnit or Specflow you can push into one or more different test cases in Zeyphr or even to multiple projects
+These features will help to track the automated test execution back to Zephyr and you will have more control on each of the test cases from
+- Control on what you to push - whether you want to push everything to Zephyr or only for those test cases you are interested from a list of test you have
+- Control on where you push - for a single test in nUnit or Specflow you can push into one or more different test cases in Zephyr or even to multiple projects
 - Control on how your push
      * based on the executing environment, for example for a test case, if run against Test Environment, then TestCase1, or if running against Stag, then TestCase2
      * based on the data, for example you can have a single test case running against several test scenarios (may be different products you are testing), you can now push into different test cases based on the data from these scenarios or more simpler like different products to different test cases
