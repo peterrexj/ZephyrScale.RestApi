@@ -8,7 +8,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
     public class Status
     {
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("self")]
         public string Self { get; set; }

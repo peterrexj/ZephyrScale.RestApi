@@ -1,4 +1,10 @@
-﻿Release 1.0.04.4
+﻿Release 1.0.0.7
+- Cloud TestRequestSearchRequest model has not property starting with lower case. This change is introduced to match the naming convention of the property name with Zephyr. Internally when extracting property name from the object it will not use json settings to get the matching name. Hence the property had to start with lower and match with Zephyr.
+- Few of id which was of type [int] is now converted to [long?]
+- Initial communication failure is handled with retry
+- On Server version, TestCase search has option to pass the required fields. This will improve the search performance as it may be required to bring all fields.
+
+Release 1.0.0.4
 - Bug fix to set the request time out
 
 Release 1.0.0.1

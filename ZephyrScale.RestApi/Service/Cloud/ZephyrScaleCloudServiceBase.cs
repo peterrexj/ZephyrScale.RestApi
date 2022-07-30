@@ -83,13 +83,21 @@ namespace ZephyrScale.RestApi.Service.Cloud
             TestApiResponse testResponse = null;
             for (var i = 0; i < 10; i++)
             {
-                Log($"Checking health status to {_appFullEndpoint}");
-                testResponse = new TestApiHttp()
-                    .SetEnvironment(_appFullEndpoint)
-                    .PrepareRequest($"/{ZephyrApiVersion}/healthcheck")
-                    .SetQueryParamsAsHeader(new ParameterCollection { { "Authorization", $"Bearer {_apiKey}" } })
-                    .SetNtmlAuthentication()
-                    .Get();
+                try
+                {
+                    Log($"Checking health status to {_appFullEndpoint}");
+                    testResponse = new TestApiHttp()
+                        .SetEnvironment(_appFullEndpoint)
+                        .PrepareRequest($"/{ZephyrApiVersion}/healthcheck")
+                        .SetQueryParamsAsHeader(new ParameterCollection { { "Authorization", $"Bearer {_apiKey}" } })
+                        .SetNtmlAuthentication()
+                        .Get();
+                }
+                catch (Exception e)
+                {
+                    Log($"Failed to communicate with {_appName}!");
+                }
+                
 
                 if (testResponse?.ResponseCode == System.Net.HttpStatusCode.Unauthorized)
                 {

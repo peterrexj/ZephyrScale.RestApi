@@ -14,6 +14,10 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         private static bool _loginVerified = false;
         private string _username;
         private string _password;
+
+        public const string TestCaseDefaultFields =
+            "key,name,folder,status,priority,component,owner,estimatedTime,labels,customFields,issueLinks";
+
         protected ZephyrScaleOnPremServiceBase(string appUrl,
            string serviceUsername,
            string servicePassword,

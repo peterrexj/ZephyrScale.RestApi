@@ -44,9 +44,11 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="testcaseNames"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="fields"></param>
         /// <returns></returns>
         IList<TestCase> TestCasesByNames(string projectKey, string[] testcaseNames,
-            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true,
+            string fields = ZephyrScaleOnPremServiceBase.TestCaseDefaultFields);
 
         /// <summary>
         /// Retrieve the Test Case matching the project key and test case names in a given folder
@@ -58,7 +60,8 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="breakSearchOnFirstConditionValid"></param>
         /// <returns></returns>
         IList<TestCase> TestCasesByNamesInFolder(string projectKey, string testCaseFolder, string[] testcaseNames,
-            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true,
+            string fields = ZephyrScaleOnPremServiceBase.TestCaseDefaultFields);
 
         /// <summary>
         /// Retrieve the Test Case matching the project key and test case keys in a given folder
@@ -68,9 +71,11 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="testcaseKeys"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="fields"></param>
         /// <returns></returns>
         IList<TestCase> TestCaseByIdsInFolder(string projectKey, string testCaseFolder, string[] testcaseKeys,
-            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true,
+            string fields = ZephyrScaleOnPremServiceBase.TestCaseDefaultFields);
 
         /// <summary>
         /// Retrieve the Test Case matching the project key and test case keys
@@ -79,9 +84,11 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="testCaseKeys"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="fields"></param>
         /// <returns></returns>
         IList<TestCase> TestCaseByIds(string projectKey, string[] testCaseKeys,
-            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+            Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true,
+            string fields = ZephyrScaleOnPremServiceBase.TestCaseDefaultFields);
 
         /// <summary>
         /// Retrieve the Test Case matching the project key and test case name
@@ -90,10 +97,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="testCaseName"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="fields"></param>
         /// <returns></returns>
         IList<TestCase> TestCaseByTestCaseName(string projectKey, string testCaseName,
             Func<TestCase, bool> predicate = null,
-            bool breakSearchOnFirstConditionValid = true);
+            bool breakSearchOnFirstConditionValid = true,
+            string fields = ZephyrScaleOnPremServiceBase.TestCaseDefaultFields);
 
         /// <summary>
         /// Retrieve the Top 'n' Test Case matching the project key in test case folder
@@ -118,8 +127,10 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="jql"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="fields"></param>
         /// <returns></returns>
-        IList<TestCase> TestCaseByJql(string jql, Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+        IList<TestCase> TestCaseByJql(string jql, Func<TestCase, bool> predicate = null, bool breakSearchOnFirstConditionValid = true, 
+            string fields = ZephyrScaleOnPremServiceBase.TestCaseDefaultFields);
 
         /// <summary>
         /// Creates a new Test Case.
@@ -157,6 +168,13 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="projectId"></param>
         /// <returns></returns>
         IEnumerable<TestCaseCustomDataMetadata> TestCaseGetCustomMetadata(int projectId);
+
+        /// <summary>
+        /// Retrieve all Test Cases linked to an Issue 
+        /// </summary>
+        /// <param name="issueKey"></param>
+        /// <returns></returns>
+        IList<TestCase> TestCaseIssueLinks(string issueKey, string fields);
 
         /// <summary>
         /// Retrieve the Test Run matching the given key

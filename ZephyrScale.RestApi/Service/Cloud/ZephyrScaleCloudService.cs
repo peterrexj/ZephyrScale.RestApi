@@ -42,9 +42,9 @@ namespace ZephyrScale.RestApi.Service.Cloud
             bool assertResponseStatusOk = true,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry = null,
             int requestTimeoutInSeconds = 300)
-                : base(appUrl, passwordAuthKey, restApiVersion, folderSeparator, 
-                     logPrefix, pageSizeSearchResult, requestRetryTimes, 
-                     timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk, 
+                : base(appUrl, passwordAuthKey, restApiVersion, folderSeparator,
+                     logPrefix, pageSizeSearchResult, requestRetryTimes,
+                     timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk,
                      listOfResponseCodeOnFailureToRetry, requestTimeoutInSeconds)
         { }
 
@@ -412,7 +412,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         public List<Folder> FolderWithFullPath(List<Folder> folders)
         {
             Log($"Request to retrieve folders with full path");
-            
+
             foreach (var folder in folders)
             {
                 if (folder.ParentId.HasValue && folder.ParentId.Value > 0)
@@ -539,7 +539,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         protected Pagination<TestCycle> TestCyclesGet(IDictionary<string, string> request)
         {
             Log($"Request to get test cycle list using [{string.Join(",", request?.Where(s => s.Value.HasValue()).Select(s => $"[{s.Key}, {s.Value}]") ?? Array.Empty<string>())}]");
-            
+
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles")
                 .SetQueryParams(request)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
@@ -609,7 +609,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         public Links TestCycleLinksGet(string testCycleIdOrKey)
         {
             if (testCycleIdOrKey.IsEmpty()) throw new Exception($"The request to search a test cycle link does not contain test cycle id");
-            
+
             Log($"Request to get test cycle links by key [{testCycleIdOrKey}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles/{testCycleIdOrKey}/links")
@@ -724,7 +724,8 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public Pagination<TestExecution> TestExecutionsGet(TestExecutionSearchRequest request) => TestExecutionsGet(request.GetPropertyValuesV2());
+        public Pagination<TestExecution> TestExecutionsGet(TestExecutionSearchRequest request) => 
+            TestExecutionsGet(request.GetPropertyValuesV2());
         protected Pagination<TestExecution> TestExecutionsGet(IDictionary<string, string> request)
         {
             Log($"Request to get test execution list using [{string.Join(",", request?.Where(s => s.Value.HasValue()).Select(s => $"[{s.Key}, {s.Value}]"))}]");
@@ -762,14 +763,14 @@ namespace ZephyrScale.RestApi.Service.Cloud
             DateTime? actualEndDateBefore = null,
             Func<TestExecution, bool> predicate = null, bool breakSearchOnFirstConditionValid = true)
             => SearchFull(
-                new TestExecutionSearchRequest
+                new
                 {
-                    projectKey = projectKey,
-                    TestCase = testCase,
-                    TestCycle = testCycle,
-                    ActualEndDateBefore = actualEndDateBefore,
-                    ActualEndDateAfter = actualEndDateAfter
-                }.GetPropertyValues(),
+                    projectKey,
+                    testCase,
+                    testCycle,
+                    actualEndDateBefore = actualEndDateBefore.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
+                    actualEndDateAfter = actualEndDateAfter.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
+                }.GetPropertyValuesV2(),
                 TestExecutionsGet, predicate, breakSearchOnFirstConditionValid).ToList();
         #endregion
 
@@ -822,7 +823,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         protected Pagination<Status> StatusesGet(IDictionary<string, string> request)
         {
             Log($"Request to get status list using [{string.Join(",", request?.Where(s => s.Value.HasValue()).Select(s => $"[{s.Key}, {s.Value}]"))}]");
-            
+
             var response = OpenRequest($"/{ZephyrApiVersion}/statuses")
                 .SetQueryParams(request)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,

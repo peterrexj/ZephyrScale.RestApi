@@ -8,13 +8,13 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
     public class Project
     {
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("self")]
         public string Self { get; set; }
 
         [JsonProperty("jiraProjectId")]
-        public int JiraProjectId { get; set; }
+        public long JiraProjectId { get; set; }
 
         [JsonProperty("key")]
         public string Key { get; set; }

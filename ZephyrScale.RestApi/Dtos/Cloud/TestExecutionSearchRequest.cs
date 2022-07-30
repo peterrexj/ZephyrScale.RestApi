@@ -8,18 +8,18 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
     public class TestExecutionSearchRequest : SearchRequestBase
     {
         [JsonProperty("testCase")]
-        public string TestCase { get; set; }
+        public string testCase { get; set; }
 
         [JsonProperty("testCycle")]
-        public string TestCycle { get; set; }
+        public string testCycle { get; set; }
 
         [JsonProperty("actualEndDateAfter")]
-        public DateTime? ActualEndDateAfter { get; set; }
+        public DateTime? actualEndDateAfter { get; set; }
 
         [JsonProperty("actualEndDateBefore")]
-        public DateTime? ActualEndDateBefore { get; set; }
+        public DateTime? actualEndDateBefore { get; set; }
 
         [JsonProperty("includeStepLinks")]
-        public bool? IncludeStepLinks { get; set; }
+        public bool? includeStepLinks { get; set; }
     }
 }
