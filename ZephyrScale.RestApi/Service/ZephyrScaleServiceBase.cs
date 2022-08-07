@@ -23,6 +23,8 @@ namespace ZephyrScale.RestApi.Service
         protected int RequestRetryTimes;
         protected int TimeToSleepBetweenRetryInMilliseconds;
         protected bool AssertResponseStatusOk;
+        protected bool RetryOnRequestTimeout;
+        protected int RequestTimeoutInSeconds;
         protected HttpStatusCode[] ListOfResponseCodeOnFailureToRetry;
 
         protected void Log(string message) => Console.WriteLine($"{_logPrefix}{message}");

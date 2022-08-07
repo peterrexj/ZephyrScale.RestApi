@@ -30,13 +30,14 @@ namespace ZephyrScale.RestApi.Service.OnPrem
            int timeToSleepBetweenRetryInMilliseconds,
            bool assertResponseStatusOk,
            HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
-           int requestTimeoutInSeconds)
+           int requestTimeoutInSeconds,
+           bool retryOnRequestTimeout)
         {
             SetBaseValues(appUrl, serviceUsername, servicePassword, zephyrApiVersion, 
                 jiraApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
                 requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, 
                 assertResponseStatusOk, listOfResponseCodeOnFailureToRetry,
-                requestTimeoutInSeconds);
+                requestTimeoutInSeconds, retryOnRequestTimeout);
         }
 
         private void SetBaseValues(string appUrl,
@@ -51,7 +52,8 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             int timeToSleepBetweenRetryInMilliseconds,
             bool assertResponseStatusOk,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
-            int requestTimeoutInSeconds)
+            int requestTimeoutInSeconds,
+            bool retryOnRequestTimeout)
         {
             if (appUrl.IsEmpty())
             {
@@ -76,6 +78,8 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             TimeToSleepBetweenRetryInMilliseconds = timeToSleepBetweenRetryInMilliseconds;
             AssertResponseStatusOk = assertResponseStatusOk;
             ListOfResponseCodeOnFailureToRetry = listOfResponseCodeOnFailureToRetry;
+            RetryOnRequestTimeout = retryOnRequestTimeout;
+            RequestTimeoutInSeconds = requestTimeoutInSeconds;
             TestAnyAppConfig.DefaultApiResponseTimeoutWaitPeriodInSeconds = requestTimeoutInSeconds;
         }
 

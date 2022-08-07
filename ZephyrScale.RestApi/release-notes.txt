@@ -1,4 +1,7 @@
-﻿Release 1.0.0.7
+﻿1.0.0.8
+- Retry on every action [Get, Post, Delete, Put] has now additional parameter to control the timeout error from server. retryOnRequestTimeout, can be set to true/false to fail when the request timeout or to retry
+
+Release 1.0.0.7
 - Cloud TestRequestSearchRequest model has not property starting with lower case. This change is introduced to match the naming convention of the property name with Zephyr. Internally when extracting property name from the object it will not use json settings to get the matching name. Hence the property had to start with lower and match with Zephyr.
 - Few of id which was of type [int] is now converted to [long?]
 - Initial communication failure is handled with retry

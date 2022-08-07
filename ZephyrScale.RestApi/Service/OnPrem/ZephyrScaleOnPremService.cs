@@ -30,6 +30,7 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         /// <param name="assertResponseStatusOk">True/False whether the response code status from the server needs to be asserted for OK (default value 'true')</param>
         /// <param name="listOfResponseCodeOnFailureToRetry">Any of these status code matched from response will then use for retry the request. For example Proxy Authentication randomly failing can be then used to retry (default value 'null' which means it is not checking any response code for fail retry)</param>
         /// <param name="requestTimeoutInSeconds">Control the total time to wait for any request made to the Zephyr Scale server. Default time is set to 300 seconds and it can be increased if the data on the server is too many and requires more time to process to respond</param>
+        /// <param name="retryOnRequestTimeout">True/False whether the request should retry on when the server fails to respond within the timeout period, retry on when server timeouts for a request</param>
         public ZephyrScaleOnPremService(string appUrl,
             string serviceUsername,
             string servicePassword,
@@ -42,12 +43,13 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             int timeToSleepBetweenRetryInMilliseconds = 1000,
             bool assertResponseStatusOk = true,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry = null,
-            int requestTimeoutInSeconds = 300)
+            int requestTimeoutInSeconds = 300,
+            bool retryOnRequestTimeout = false)
                 : base(appUrl, serviceUsername, servicePassword, zephyrApiVersion, jiraApiVersion, 
                     folderSeparator, logPrefix, pageSizeSearchResult,
                     requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, 
                     assertResponseStatusOk, listOfResponseCodeOnFailureToRetry,
-                    requestTimeoutInSeconds)
+                    requestTimeoutInSeconds, retryOnRequestTimeout)
         { }
 
         /// <summary>
@@ -61,10 +63,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Trying to get jira environments for project [{projectKey}]");
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/environments?projectKey={projectKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
@@ -76,10 +80,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Request to get the list of projects available through {_appName}");
 
             var response = OpenRequest($"/rest/tests/{ZephyrApiVersion}/project")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
@@ -90,10 +96,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Request to get the list of project available in Jira");
 
             var response = OpenRequest($"/rest/api/{JiraApiVersion}/project")
+                 .SetTimeout(RequestTimeoutInSeconds)
                  .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
@@ -121,10 +129,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/folder")
               .SetJsonBody(testrunfolder)
+              .SetTimeout(RequestTimeoutInSeconds)
               .PostWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
         }
 
         #region Test Case
@@ -138,10 +148,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Request to get test case by id [{testcaseKey}]");
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testcase/{testcaseKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCase>(response.ResponseBody.ContentJson);
@@ -289,10 +301,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             }
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testcase/search")
                .SetQueryParams(request)
+               .SetTimeout(RequestTimeoutInSeconds)
                .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<List<TestCase>>(response.ResponseBody.ContentJson);
@@ -315,10 +329,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testcase")
                .SetJsonBody(JsonConvert.SerializeObject(jiraTestData, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
+               .SetTimeout(RequestTimeoutInSeconds)
                .PostWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
@@ -346,10 +362,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testcase/{testCaseKey}")
                .SetJsonBody(JsonConvert.SerializeObject(testCase, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
+               .SetTimeout(RequestTimeoutInSeconds)
                .PutWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
         }
@@ -364,10 +382,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Request to get test case metadata for the project [{projectId}]");
 
             var response = OpenRequest($"/rest/tests/{ZephyrApiVersion}/project/{projectId}/customfields/testcase")
+              .SetTimeout(RequestTimeoutInSeconds)
               .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<IEnumerable<TestCaseCustomDataMetadata>>(response.ResponseBody.ContentJson);
@@ -383,10 +403,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
         {
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/issuelink/{issueKey}/testcases")
                 .SetQueryParams(new ParameterCollection { { "fields", fields }})
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<List<TestCase>>(response.ResponseBody.ContentJson);
@@ -404,10 +426,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Request to get test cycle by key [{testCycleKey}]");
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun/{testCycleKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCycle>(response.ResponseBody.ContentJson);
@@ -518,10 +542,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             }
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun/search")
                .SetQueryParams(request)
+               .SetTimeout(RequestTimeoutInSeconds)
                .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
             response.AssertResponseStatusForSuccess();
             return ToType<List<TestCycle>>(response.ResponseBody.ContentJson);
         }
@@ -541,10 +567,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun")
               .SetJsonBody(JsonConvert.SerializeObject(request, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
+              .SetTimeout(RequestTimeoutInSeconds)
               .PostWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
@@ -566,10 +594,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun/{testrunIdOrKey}/testcase/{testcaseIdOrKey}/testresult")
                .SetJsonBody(JsonConvert.SerializeObject(request, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
+               .SetTimeout(RequestTimeoutInSeconds)
                .PostWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return SerializationHelper.ToType<TestExecutionResult>(response.ResponseBody.ContentJson);
@@ -596,10 +626,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun/{testrunId}/testcase/{testcaseId}/testresult")
                .SetJsonBody(JsonConvert.SerializeObject(request, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
                .SetQueryParamsAsHeader(keyValuePairs)
+               .SetTimeout(RequestTimeoutInSeconds)
                .PutWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return SerializationHelper.ToType<TestExecutionResult>(response.ResponseBody.ContentJson);
@@ -625,10 +657,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun/{testCycleKey}/testresults")
                .SetJsonBody(JsonConvert.SerializeObject(request, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
                .SetQueryParamsAsHeader(keyValuePairs)
+               .SetTimeout(RequestTimeoutInSeconds)
                .PostWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return SerializationHelper.ToType<List<TestExecutionResult>>(response.ResponseBody.ContentJson);
@@ -644,10 +678,12 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             Log($"Request to get test execution results within a test cycle [{testCycleKey}]");
 
             var response = OpenRequest($"/rest/atm/{ZephyrApiVersion}/testrun/{testCycleKey}/testresults")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return SerializationHelper.ToType<List<TestExecutionResult>>(response.ResponseBody.ContentJson);

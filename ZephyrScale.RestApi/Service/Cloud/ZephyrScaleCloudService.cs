@@ -31,6 +31,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// <param name="assertResponseStatusOk">True/False whether the response code status from the server needs to be asserted for OK (default value 'true')</param>
         /// <param name="listOfResponseCodeOnFailureToRetry">Any of these status code matched from response will then use for retry the request. For example Proxy Authentication randomly failing can be then used to retry (default value 'null' which means it is not checking any response code for fail retry)</param>
         /// <param name="requestTimeoutInSeconds">Control the total time to wait for any request made to the Zephyr Scale server. Default time is set to 300 seconds and it can be increased if the data on the server is too many and requires more time to process to respond</param>
+        /// <param name="retryOnRequestTimeout">True/False whether the request should retry on when the server fails to respond within the timeout period, retry on when server timeouts for a request</param>
         public ZephyrScaleCloudService(string appUrl,
             string passwordAuthKey,
             string restApiVersion = "v2",
@@ -41,11 +42,13 @@ namespace ZephyrScale.RestApi.Service.Cloud
             int timeToSleepBetweenRetryInMilliseconds = 1000,
             bool assertResponseStatusOk = true,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry = null,
-            int requestTimeoutInSeconds = 300)
+            int requestTimeoutInSeconds = 300,
+            bool retryOnRequestTimeout = false)
                 : base(appUrl, passwordAuthKey, restApiVersion, folderSeparator,
                      logPrefix, pageSizeSearchResult, requestRetryTimes,
                      timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk,
-                     listOfResponseCodeOnFailureToRetry, requestTimeoutInSeconds)
+                     listOfResponseCodeOnFailureToRetry, requestTimeoutInSeconds,
+                     retryOnRequestTimeout)
         { }
 
         #region Test Case
@@ -67,10 +70,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcases")
                .SetJsonBody(request)
+               .SetTimeout(RequestTimeoutInSeconds)
                .PostWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCase>(response.ResponseBody.ContentString);
@@ -101,10 +106,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcases/{request.Key}")
                 .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .PutWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCase>(response.ResponseBody.ContentString);
@@ -124,10 +131,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get test case by key [{testCaseKey}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcases/{testCaseKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCase>(response.ResponseBody.ContentString);
@@ -145,10 +154,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcases")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<TestCase>>(response.ResponseBody.ContentString);
@@ -184,10 +195,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get test case link by key [{testCaseKey}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcases/{testCaseKey}/links")
+               .SetTimeout(RequestTimeoutInSeconds)
                .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Links>(response.ResponseBody.ContentString);
@@ -212,11 +225,13 @@ namespace ZephyrScale.RestApi.Service.Cloud
                 issueId
             };
             var response = OpenRequest($"/{ZephyrApiVersion}/testcases/{testCaseKey}/links/issues")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .SetJsonBody(body)
                 .PostWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
             response.AssertResponseStatusForSuccess();
         }
 
@@ -273,10 +288,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             if (folderId.IsEmpty()) throw new Exception($"The request to search a folder does not contain folder id");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/folders/{folderId}")
+               .SetTimeout(RequestTimeoutInSeconds)
                .GetWithRetry(assertOk: AssertResponseStatusOk,
                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                    retryOption: RequestRetryTimes,
-                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                   httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                   retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Folder>(response.ResponseBody.ContentString);
@@ -301,10 +318,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/folders")
                 .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .PostWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Folder>(response.ResponseBody.ContentString);
@@ -379,10 +398,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/folders")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<Folder>>(response.ResponseBody.ContentString);
@@ -498,10 +519,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles")
                 .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .PostWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCycle>(response.ResponseBody.ContentString);
@@ -521,10 +544,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get Test Cycle by test cycle key [{testCycleIdOrKey}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles/{testCycleIdOrKey}")
+              .SetTimeout(RequestTimeoutInSeconds)
               .GetWithRetry(assertOk: AssertResponseStatusOk,
                   timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                   retryOption: RequestRetryTimes,
-                  httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                  httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                  retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCycle>(response.ResponseBody.ContentString);
@@ -542,10 +567,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<TestCycle>>(response.ResponseBody.ContentString);
@@ -590,10 +617,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles/{request.Key}")
                 .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .PutWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestCycle>(response.ResponseBody.ContentString);
@@ -613,10 +642,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get test cycle links by key [{testCycleIdOrKey}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles/{testCycleIdOrKey}/links")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Links>(response.ResponseBody.ContentString);
@@ -642,10 +673,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             };
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles/{testCycleIdOrKey}/links/issues")
                 .SetJsonBody(body)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .PostWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
             response.AssertResponseStatusForSuccess();
         }
 
@@ -688,10 +721,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions")
                 .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .PostWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
             response.AssertResponseStatusForSuccess();
         }
 
@@ -710,10 +745,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get test execution by key [{testExecutionIdOrKey}] with include steps as [{includeStepLinks}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions/{testExecutionIdOrKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<TestExecution>(response.ResponseBody.ContentString);
@@ -724,7 +761,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public Pagination<TestExecution> TestExecutionsGet(TestExecutionSearchRequest request) => 
+        public Pagination<TestExecution> TestExecutionsGet(TestExecutionSearchRequest request) =>
             TestExecutionsGet(request.GetPropertyValuesV2());
         protected Pagination<TestExecution> TestExecutionsGet(IDictionary<string, string> request)
         {
@@ -732,10 +769,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<TestExecution>>(response.ResponseBody.ContentString);
@@ -789,10 +828,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get status by id [{statusId}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/statuses/{statusId}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Status>(response.ResponseBody.ContentString);
@@ -826,10 +867,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/statuses")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<Status>>(response.ResponseBody.ContentString);
@@ -849,10 +892,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/environments")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<Environment>>(response.ResponseBody.ContentString);
@@ -888,10 +933,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get environment by id [{environmentId}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/environments/{environmentId}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
             return ToType<Environment>(response.ResponseBody.ContentString);
@@ -913,10 +960,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
             Log($"Request to get the project by key [{projectIdOrKey}]");
 
             var response = OpenRequest($"/{ZephyrApiVersion}/projects/{projectIdOrKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
@@ -937,10 +986,12 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var response = OpenRequest($"/{ZephyrApiVersion}/projects")
                 .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
-                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry);
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
 
             response.AssertResponseStatusForSuccess();
 
