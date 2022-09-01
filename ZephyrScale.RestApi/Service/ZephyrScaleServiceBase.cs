@@ -12,6 +12,7 @@ namespace ZephyrScale.RestApi.Service
         protected string _logPrefix;
         protected string _appName = "Zephyr";
         protected string _appFullEndpoint;
+        protected string _proxyKeyName;
 
         public string ZeypherUrl { get; set; }
         public string ZephyrApiVersion { get; set; }

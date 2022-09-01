@@ -19,7 +19,7 @@
 		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageReleaseNotes>First Release - Rest Endpoints - Cloud and Server</PackageReleaseNotes>
 		<Description>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/product-description.txt"))</Description>
-		<Version>1.0.0.8</Version>
+		<Version>1.0.0.9</Version>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Company>Peter Joseph</Company>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

@@ -24,12 +24,14 @@ namespace ZephyrScale.RestApi.Service.Cloud
             bool assertResponseStatusOk,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
             int requestTimeoutInSeconds,
-            bool retryOnRequestTimeout)
+            bool retryOnRequestTimeout,
+            string proxyKeyName)
         {
             SetBaseValues(appUrl, passwordAuthKey, restApiVersion, folderSeparator, 
                 logPrefix, pageSizeSearchResult, requestRetryTimes, 
                 timeToSleepBetweenRetryInMilliseconds, assertResponseStatusOk, 
-                listOfResponseCodeOnFailureToRetry, requestTimeoutInSeconds, retryOnRequestTimeout);
+                listOfResponseCodeOnFailureToRetry, requestTimeoutInSeconds, retryOnRequestTimeout,
+                proxyKeyName);
         }
 
         private void SetBaseValues(string appUrl,
@@ -43,7 +45,8 @@ namespace ZephyrScale.RestApi.Service.Cloud
             bool assertResponseStatusOk,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
             int requestTimeoutInSeconds,
-            bool retryOnRequestTimeout)
+            bool retryOnRequestTimeout,
+            string proxyKeyName)
         {
             if (appUrl.IsEmpty())
             {
@@ -61,6 +64,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             _appFullEndpoint = ZeypherUrl;
             _logPrefix = logPrefix;
+            _proxyKeyName = proxyKeyName;
             PageSizeSearch = pageSizeSearchResult;
             RequestRetryTimes = requestRetryTimes;
             TimeToSleepBetweenRetryInMilliseconds = timeToSleepBetweenRetryInMilliseconds;
@@ -95,6 +99,8 @@ namespace ZephyrScale.RestApi.Service.Cloud
                         .PrepareRequest($"/{ZephyrApiVersion}/healthcheck")
                         .SetQueryParamsAsHeader(new ParameterCollection { { "Authorization", $"Bearer {_apiKey}" } })
                         .SetNtmlAuthentication()
+                        .ProxyRequired(_proxyKeyName.HasValue())
+                        .AddProxy(_proxyKeyName)
                         .Get();
                 }
                 catch (Exception e)
@@ -139,7 +145,9 @@ namespace ZephyrScale.RestApi.Service.Cloud
                 .SetEnvironment(_appFullEndpoint)
                 .PrepareRequest(requestUrl)
                 .SetQueryParamsAsHeader(new ParameterCollection { { "Authorization", $"Bearer {_apiKey}" } })
-                .SetNtmlAuthentication();
+                .SetNtmlAuthentication()
+                .ProxyRequired(_proxyKeyName.HasValue())
+                .AddProxy(_proxyKeyName);
         }
     }
 }

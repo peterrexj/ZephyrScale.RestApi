@@ -31,13 +31,15 @@ namespace ZephyrScale.RestApi.Service.OnPrem
            bool assertResponseStatusOk,
            HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
            int requestTimeoutInSeconds,
-           bool retryOnRequestTimeout)
+           bool retryOnRequestTimeout,
+           string proxyKeyName)
         {
             SetBaseValues(appUrl, serviceUsername, servicePassword, zephyrApiVersion, 
                 jiraApiVersion, folderSeparator, logPrefix, pageSizeSearchResult,
                 requestRetryTimes, timeToSleepBetweenRetryInMilliseconds, 
                 assertResponseStatusOk, listOfResponseCodeOnFailureToRetry,
-                requestTimeoutInSeconds, retryOnRequestTimeout);
+                requestTimeoutInSeconds, retryOnRequestTimeout,
+                proxyKeyName);
         }
 
         private void SetBaseValues(string appUrl,
@@ -53,7 +55,8 @@ namespace ZephyrScale.RestApi.Service.OnPrem
             bool assertResponseStatusOk,
             HttpStatusCode[] listOfResponseCodeOnFailureToRetry,
             int requestTimeoutInSeconds,
-            bool retryOnRequestTimeout)
+            bool retryOnRequestTimeout,
+            string proxyKeyName)
         {
             if (appUrl.IsEmpty())
             {
@@ -73,6 +76,7 @@ namespace ZephyrScale.RestApi.Service.OnPrem
 
             _appFullEndpoint = ZeypherUrl;
             _logPrefix = logPrefix;
+            _proxyKeyName = proxyKeyName;
             PageSizeSearch = pageSizeSearchResult;
             RequestRetryTimes = requestRetryTimes;
             TimeToSleepBetweenRetryInMilliseconds = timeToSleepBetweenRetryInMilliseconds;
@@ -106,6 +110,8 @@ namespace ZephyrScale.RestApi.Service.OnPrem
                       .PrepareRequest($"/rest/api/{JiraApiVersion}/serverInfo")
                       .AddBasicAuthorizationHeader(_username, _password)
                       .SetNtmlAuthentication()
+                      .ProxyRequired(_proxyKeyName.HasValue())
+                      .AddProxy(_proxyKeyName)
                       .Get();
 
                 if (testResponse?.ResponseCode == System.Net.HttpStatusCode.Unauthorized)
@@ -143,7 +149,9 @@ namespace ZephyrScale.RestApi.Service.OnPrem
                 .SetEnvironment(_appFullEndpoint)
                 .PrepareRequest(requestUrl)
                 .AddBasicAuthorizationHeader(_username, _password)
-                .SetNtmlAuthentication();
+                .SetNtmlAuthentication()
+                .ProxyRequired(_proxyKeyName.HasValue())
+                .AddProxy(_proxyKeyName);
         }
     }
 }
