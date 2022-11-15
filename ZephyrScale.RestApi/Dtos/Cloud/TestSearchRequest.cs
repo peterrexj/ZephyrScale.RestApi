@@ -9,5 +9,8 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
     {
         [JsonProperty("folderId")]
         public long? folderId { get; set; }
+
+        [JsonProperty("jiraProjectVersionId")]
+        public long? jiraProjectVersionId { get; set; }
     }
 }

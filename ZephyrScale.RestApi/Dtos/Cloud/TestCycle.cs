@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Pj.Library;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ZephyrScale.RestApi.Dtos.Cloud
 {
@@ -32,10 +31,42 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
         public string Description { get; set; }
 
         [JsonProperty("plannedStartDate")]
-        public DateTime? PlannedStartDate { get; set; }
+        public string PlannedStartDate { get; set; }
+
+        public DateTime? PlannedStartAsDateTime
+        {
+            get
+            {
+                if (PlannedStartDate.HasValue())
+                {
+                    DateTime.TryParse(PlannedStartDate, out var result);
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         [JsonProperty("plannedEndDate")]
-        public DateTime? PlannedEndDate { get; set; }
+        public string? PlannedEndDate { get; set; }
+
+        public DateTime? PlannedEndDateAsDateTime
+        {
+            get
+            {
+                if (PlannedEndDate.HasValue())
+                {
+                    DateTime.TryParse(PlannedEndDate, out var result);
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         [JsonProperty("owner")]
         public Owner Owner { get; set; }

@@ -184,7 +184,8 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// <param name="breakSearchOnFirstConditionValid"></param>
         /// <returns></returns>
         List<TestCycle> TestCyclesGetFull(string projectKey, long? folderId = null,
-            Func<TestCycle, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+            Func<TestCycle, bool> predicate = null, bool breakSearchOnFirstConditionValid = true,
+            long? jiraProjectVersionId = null);
 
         /// <summary>
         /// Updates an existing test cycle. If the project has test cycle custom fields, all custom fields should be present in the request. To leave any of them blank, please set them null if they are not required custom fields.
@@ -268,7 +269,10 @@ namespace ZephyrScale.RestApi.Service.Cloud
             string testCycle = null,
             DateTime? actualEndDateAfter = null,
             DateTime? actualEndDateBefore = null,
-            Func<TestExecution, bool> predicate = null, bool breakSearchOnFirstConditionValid = true);
+            Func<TestExecution, bool> predicate = null, 
+            bool breakSearchOnFirstConditionValid = true,
+            long? jiraProjectVersionId = null,
+            bool? onlyLastExecutions = null);
 
         /// <summary>
         /// Returns a status for the given ID.

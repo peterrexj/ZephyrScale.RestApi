@@ -21,5 +21,11 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
 
         [JsonProperty("includeStepLinks")]
         public bool? includeStepLinks { get; set; }
+
+        [JsonProperty("jiraProjectVersionId")]
+        public long? jiraProjectVersionId { get; set; }
+
+        [JsonProperty("onlyLastExecutions")]
+        public bool? onlyLastExecutions { get; set; }
     }
 }

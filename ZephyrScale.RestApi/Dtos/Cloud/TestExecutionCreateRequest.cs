@@ -26,7 +26,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
         public string EnvironmentName { get; set; }
 
         [JsonProperty("actualEndDate")]
-        public DateTime? ActualEndDate { get; set; }
+        public string ActualEndDate { get; set; }
 
         [JsonProperty("executionTime")]
         public long? ExecutionTime { get; set; }

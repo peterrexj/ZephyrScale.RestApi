@@ -590,10 +590,13 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// <param name="folderId"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="jiraProjectVersionId"></param>
         /// <returns></returns>
         public List<TestCycle> TestCyclesGetFull(string projectKey, long? folderId = null,
-            Func<TestCycle, bool> predicate = null, bool breakSearchOnFirstConditionValid = true)
-            => SearchFull(new TestSearchRequest { projectKey = projectKey, folderId = folderId }.GetPropertyValuesV2(),
+            Func<TestCycle, bool> predicate = null, 
+            bool breakSearchOnFirstConditionValid = true,
+            long? jiraProjectVersionId = null)
+            => SearchFull(new TestSearchRequest { projectKey = projectKey, folderId = folderId, jiraProjectVersionId = jiraProjectVersionId }.GetPropertyValuesV2(),
                 TestCyclesGet, predicate, breakSearchOnFirstConditionValid).ToList();
 
         /// <summary>
@@ -795,6 +798,8 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// <param name="actualEndDateBefore"></param>
         /// <param name="predicate"></param>
         /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <param name="jiraProjectVersionId"></param>
+        /// <param name="onlyLastExecutions"></param>
         /// <returns></returns>
         public List<TestExecution> TestExecutionsGetFull(
             string projectKey,
@@ -802,7 +807,10 @@ namespace ZephyrScale.RestApi.Service.Cloud
             string testCycle = null,
             DateTime? actualEndDateAfter = null,
             DateTime? actualEndDateBefore = null,
-            Func<TestExecution, bool> predicate = null, bool breakSearchOnFirstConditionValid = true)
+            Func<TestExecution, bool> predicate = null, 
+            bool breakSearchOnFirstConditionValid = true,
+            long? jiraProjectVersionId = null,
+            bool? onlyLastExecutions = null)
             => SearchFull(
                 new
                 {
@@ -811,6 +819,8 @@ namespace ZephyrScale.RestApi.Service.Cloud
                     testCycle,
                     actualEndDateBefore = actualEndDateBefore.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
                     actualEndDateAfter = actualEndDateAfter.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
+                    jiraProjectVersionId = jiraProjectVersionId,
+                    onlyLastExecutions = onlyLastExecutions,
                 }.GetPropertyValuesV2(),
                 TestExecutionsGet, predicate, breakSearchOnFirstConditionValid).ToList();
         #endregion
