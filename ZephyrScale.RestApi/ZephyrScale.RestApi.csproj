@@ -27,7 +27,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TestAny.Essentials.Api" Version="1.0.5.11" />
+		<PackageReference Include="TestAny.Essentials.Api" Version="1.0.5.12" />
 	</ItemGroup>
 
 	<ItemGroup>
