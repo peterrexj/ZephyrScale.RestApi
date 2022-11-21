@@ -1081,7 +1081,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
                         var currentSearchQry = searchQuery.DeepClone();
                         currentSearchQry["startAt"] = (i * PageSizeSearch).ToString();
 
-                        Console.WriteLine($"Trying to read {count} of {totalPages} starting at {currentSearchQry["startAt"]}");
+                        PjUtility.Log($"Trying to read {count} of {totalPages} starting at {currentSearchQry["startAt"]}");
                         var values = search(currentSearchQry).Values;
 
                         if (predicate != null)
