@@ -54,5 +54,8 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
 
         [JsonProperty("links")]
         public Links Links { get; set; }
+
+        [JsonProperty("jiraProjectVersion")]
+        public Project JiraProjectVersion { get; set; }
     }
 }

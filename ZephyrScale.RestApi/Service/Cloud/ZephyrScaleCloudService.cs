@@ -1113,5 +1113,29 @@ namespace ZephyrScale.RestApi.Service.Cloud
             return results.ToList();
         }
         #endregion
+
+        #region IssueLinks
+        public List<TestCycle> IssueLinksTestCycles(string issueKey)
+        {
+            if (issueKey.IsEmpty()) throw new ArgumentNullException(nameof(issueKey));
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/issuelinks/{issueKey}/testcycles").Get();
+            
+            response.AssertResponseStatusForSuccess();
+
+            return ToType<List<TestCycle>>(response.ResponseBody.ContentString);
+        }
+
+        public List<TestCase> IssueLinksTestCases(string issueKey)
+        {
+            if (issueKey.IsEmpty()) throw new ArgumentNullException(nameof(issueKey));
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/issuelinks/{issueKey}/testcases").Get();
+
+            response.AssertResponseStatusForSuccess();
+
+            return ToType<List<TestCase>>(response.ResponseBody.ContentString);
+        }
+        #endregion
     }
 }

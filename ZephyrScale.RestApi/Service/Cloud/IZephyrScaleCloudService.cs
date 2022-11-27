@@ -361,6 +361,22 @@ namespace ZephyrScale.RestApi.Service.Cloud
         List<Project> ProjectsGetFull(Func<Project, bool> predicate = null,
             bool breakSearchOnFirstConditionValid = true);
 
+        /// <summary>
+        /// Get test cycle IDs linked to the given Jira issue.
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#tag/Issue-Links/operation/getIssueLinkTestCycles
+        /// </summary>
+        /// <param name="issueKey"></param>
+        /// <returns></returns>
+        List<TestCycle> IssueLinksTestCycles(string issueKey);
+
+        /// <summary>
+        /// Get test case keys and versions linked to the given Jira issue.
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#tag/Issue-Links/operation/getIssueLinkTestCases
+        /// </summary>
+        /// <param name="issueKey"></param>
+        /// <returns></returns>
+        List<TestCase> IssueLinksTestCases(string issueKey);
+
         void LinkDelete(string linkId);
         string ZeypherUrl { get; set; }
         string ZephyrApiVersion { get; set; }

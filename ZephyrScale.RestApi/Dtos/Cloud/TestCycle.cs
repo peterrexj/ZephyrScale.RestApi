@@ -12,6 +12,9 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
         [JsonProperty("key")]
         public string Key { get; set; }
 
+        [JsonProperty("self")]
+        public string Self { get; set; }
+
         [JsonProperty("name")]
         public string Name { get; set; }
 

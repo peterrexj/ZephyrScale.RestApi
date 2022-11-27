@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Pj.Library;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,11 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
 
         [JsonProperty("key")]
         public string Key { get; set; }
+
+        [JsonProperty("self")]
+        public string Self { get; set; }
+
+        public string KeyFromSelf => Self?.RegexMatchGroupValue(@"testcases\/(.*)\/v", 1) ?? string.Empty;
 
         [JsonProperty("name")]
         public string Name { get; set; }
