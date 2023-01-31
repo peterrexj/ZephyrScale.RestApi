@@ -817,7 +817,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
                     projectKey,
                     testCase,
                     testCycle,
-                    actualEndDateBefore = actualEndDateBefore.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
+                    actualEndDateBefore = actualEndDateBefore.HasValue ? actualEndDateBefore.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
                     actualEndDateAfter = actualEndDateAfter.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
                     jiraProjectVersionId = jiraProjectVersionId,
                     onlyLastExecutions = onlyLastExecutions,

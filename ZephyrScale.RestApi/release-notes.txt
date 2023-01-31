@@ -1,4 +1,7 @@
-﻿1.0.0.10
+﻿1.0.0.14
+- fix: Execution extraction actualEndDateBefore was not considered
+
+1.0.0.10
 - Test Cycles can now be filtered via version (jiraProjectVersionId)
 - Test Execution Get can now be filtered via version (jiraProjectVersionId) and onlyLastExecutions. This will allow to narrow down to a version or if you want to know the total number of test cases that belongs to a test cycle.
 
