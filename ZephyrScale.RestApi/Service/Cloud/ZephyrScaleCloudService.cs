@@ -1179,7 +1179,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
                 PrioritiesGet, predicate, breakSearchOnFirstConditionValid).ToList();
 
         /// <summary>
-        /// Returns the list of statuses based on the search request
+        /// Returns the list of Priorities based on the search request
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>

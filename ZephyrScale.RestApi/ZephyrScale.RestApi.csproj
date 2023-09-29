@@ -19,7 +19,7 @@
 		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageReleaseNotes>First Release - Rest Endpoints - Cloud and Server</PackageReleaseNotes>
 		<Description>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/product-description.txt"))</Description>
-		<Version>1.0.0.15</Version>
+		<Version>1.0.0.16</Version>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Company>Peter Joseph</Company>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -27,7 +27,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TestAny.Essentials.Api" Version="1.0.5.16" />
+		<PackageReference Include="TestAny.Essentials.Api" Version="1.0.5.17" />
 	</ItemGroup>
 
 	<ItemGroup>

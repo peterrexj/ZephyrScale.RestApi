@@ -78,6 +78,9 @@ Nuget package link: <https://www.nuget.org/packages/ZephyrScale.Rest.Sdk>
      - LinkDelete
      - IssueLinksTestCycles
      - IssueLinksTestCases
+     - PriorityGet
+     - PrioritiesGetFull
+     - PrioritiesGet
 
 ### Features Server
 
