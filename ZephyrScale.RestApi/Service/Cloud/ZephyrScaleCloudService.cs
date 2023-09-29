@@ -1137,5 +1137,70 @@ namespace ZephyrScale.RestApi.Service.Cloud
             return ToType<List<TestCase>>(response.ResponseBody.ContentString);
         }
         #endregion
+
+        #region Priorities
+        /// <summary>
+        /// Returns a priority for the given ID.
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#tag/Priorities/operation/getPriority
+        /// </summary>
+        /// <param name="priorityId"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public Priority PriorityGet(long priorityId)
+        {
+            if (priorityId <= 0) throw new Exception($"The request to search a priority does not contain priority id");
+
+            Log($"Request to get priority by id [{priorityId}]");
+            
+            var response = OpenRequest($"/{ZephyrApiVersion}/priorities/{priorityId}")
+                .SetTimeout(RequestTimeoutInSeconds)
+                .GetWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<Priority>(response.ResponseBody.ContentString);
+        }
+
+        /// <summary>
+        /// Returns all priorities.
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#tag/Priorities/operation/listPriorities
+        /// Use predicate to streamline your result, for examplev: (t) => t.Name.EqualsIgnoreCase("test") 
+        /// Use [breakSearchOnFirstConditionValid] if you want break the search once the match is found. This can improve performance when searching for specific item
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <param name="predicate"></param>
+        /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <returns></returns>
+        public List<Priority> PrioritiesGetFull(string projectKey, Func<Priority, bool> predicate = null, bool breakSearchOnFirstConditionValid = true)
+            => SearchFull(new SearchRequestBase { projectKey = projectKey }.GetPropertyValues(),
+                PrioritiesGet, predicate, breakSearchOnFirstConditionValid).ToList();
+
+        /// <summary>
+        /// Returns the list of statuses based on the search request
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Pagination<Priority> PrioritiesGet(SearchRequestBase request) =>
+            PrioritiesGet(request.GetPropertyValuesV2());
+        protected Pagination<Priority> PrioritiesGet(IDictionary<string, string> request)
+        {
+            Log($"Request to get status list using [{string.Join(",", request?.Where(s => s.Value.HasValue()).Select(s => $"[{s.Key}, {s.Value}]"))}]");
+            
+            var response = OpenRequest($"/{ZephyrApiVersion}/priorities")
+                .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
+                .GetWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<Pagination<Priority>>(response.ResponseBody.ContentString);
+        }
+        #endregion
     }
 }
