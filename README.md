@@ -50,6 +50,8 @@ Nuget package link: <https://www.nuget.org/packages/ZephyrScale.Rest.Sdk>
      - TestCaseLinkCreate
      - TestCaseCustomFieldNames
      - TestCaseCustomFieldName
+     - TestCaseCountGet
+     - TestCaseExecutionCountGet
      - FolderGetById
      - FolderCreate
      - FolderCreateRecursive = create's the full folder path based on folder not available
@@ -63,9 +65,12 @@ Nuget package link: <https://www.nuget.org/packages/ZephyrScale.Rest.Sdk>
      - TestCycleLinksGet
      - TestCycleLinkCreate
      - TestCycleCustomFieldNames
+     - TestCycleCountGet
+     - TestCycleExecutionCountGet
      - TestExecutionCreate
      - TestExecutionGet
      - TestExecutionsGetFull = with options to search by any test execution result's field property value
+     - TestExecutionCountGet
      - StatusGet
      - StatusesGet
      - StatusesGetFull = with options to search by any status's field property value

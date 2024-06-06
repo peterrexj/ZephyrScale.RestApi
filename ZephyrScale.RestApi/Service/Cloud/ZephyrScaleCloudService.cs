@@ -273,6 +273,32 @@ namespace ZephyrScale.RestApi.Service.Cloud
             }
             return testCases.CustomFields;
         }
+
+        /// <summary>
+        /// Returns the total number of test cases available in the project
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <returns></returns>
+        public long TestCaseCountGet(string projectKey)
+        {
+            return SearchCount(new TestSearchRequest { projectKey = projectKey }.GetPropertyValuesV2(), TestCasesGet);
+        }
+
+        /// <summary>
+        /// Returns the total number of execution within a test case
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <param name="testCase"></param>
+        /// <returns></returns>
+        public long TestCaseExecutionCountGet(string projectKey, string testCase)
+        {
+            return SearchCount(new
+            {
+                projectKey,
+                testCase,
+            }.GetPropertyValuesV2(), TestExecutionsGet);
+        }
+
         #endregion
 
         #region Folder
@@ -593,7 +619,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         /// <param name="jiraProjectVersionId"></param>
         /// <returns></returns>
         public List<TestCycle> TestCyclesGetFull(string projectKey, long? folderId = null,
-            Func<TestCycle, bool> predicate = null, 
+            Func<TestCycle, bool> predicate = null,
             bool breakSearchOnFirstConditionValid = true,
             long? jiraProjectVersionId = null)
             => SearchFull(new TestSearchRequest { projectKey = projectKey, folderId = folderId, jiraProjectVersionId = jiraProjectVersionId }.GetPropertyValuesV2(),
@@ -674,7 +700,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             var body = new
             {
-                issueId = issueId
+                issueId
             };
             var response = OpenRequest($"/{ZephyrApiVersion}/testcycles/{testCycleIdOrKey}/links/issues")
                 .SetJsonBody(body)
@@ -704,6 +730,32 @@ namespace ZephyrScale.RestApi.Service.Cloud
             }
             return testCycles.CustomFields.GetPropertyNamesV2();
         }
+
+        /// <summary>
+        /// Returns the count of cycle available in the project
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <returns></returns>
+        public long TestCycleCountGet(string projectKey)
+        {
+            return SearchCount(new TestSearchRequest { projectKey = projectKey }.GetPropertyValuesV2(), TestCyclesGet);
+        }
+
+        /// <summary>
+        /// Returns the count of execution within a cycle
+        /// </summary>
+        /// <param name="projectKey">Jira project key</param>
+        /// <param name="testCycle">Cycle key</param>
+        /// <returns></returns>
+        public long TestCycleExecutionCountGet(string projectKey, string testCycle)
+        {
+            return SearchCount(new
+            {
+                projectKey,
+                testCycle,
+            }.GetPropertyValuesV2(), TestExecutionsGet);
+        }
+
         #endregion
 
         #region Test Execution
@@ -807,7 +859,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
             string testCycle = null,
             DateTime? actualEndDateAfter = null,
             DateTime? actualEndDateBefore = null,
-            Func<TestExecution, bool> predicate = null, 
+            Func<TestExecution, bool> predicate = null,
             bool breakSearchOnFirstConditionValid = true,
             long? jiraProjectVersionId = null,
             bool? onlyLastExecutions = null)
@@ -819,10 +871,19 @@ namespace ZephyrScale.RestApi.Service.Cloud
                     testCycle,
                     actualEndDateBefore = actualEndDateBefore.HasValue ? actualEndDateBefore.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
                     actualEndDateAfter = actualEndDateAfter.HasValue ? actualEndDateAfter.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null,
-                    jiraProjectVersionId = jiraProjectVersionId,
-                    onlyLastExecutions = onlyLastExecutions,
+                    jiraProjectVersionId,
+                    onlyLastExecutions,
                 }.GetPropertyValuesV2(),
                 TestExecutionsGet, predicate, breakSearchOnFirstConditionValid).ToList();
+
+
+        public long TestExecutionCountGet(string projectKey)
+        {
+            return SearchCount(new
+            {
+                projectKey,
+            }.GetPropertyValuesV2(), TestExecutionsGet);
+        }
         #endregion
 
         #region Status
@@ -1112,6 +1173,22 @@ namespace ZephyrScale.RestApi.Service.Cloud
             }
             return results.ToList();
         }
+
+        protected long SearchCount<T>(IDictionary<string, string> searchQuery,
+            Func<IDictionary<string, string>, Pagination<T>> search)
+        {
+            if (searchQuery.ContainsKey("maxResults")) searchQuery["maxResults"] = "1"; else searchQuery.Add("maxResults", "1");
+            if (searchQuery.ContainsKey("startAt")) searchQuery["startAt"] = "0"; else searchQuery.Add("startAt", "0");
+
+            var resp = search(searchQuery);
+
+            if (resp != null && resp.Total.HasValue)
+            {
+                return resp.Total.Value;
+            }
+
+            return 0;
+        }
         #endregion
 
         #region IssueLinks
@@ -1120,7 +1197,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
             if (issueKey.IsEmpty()) throw new ArgumentNullException(nameof(issueKey));
 
             var response = OpenRequest($"/{ZephyrApiVersion}/issuelinks/{issueKey}/testcycles").Get();
-            
+
             response.AssertResponseStatusForSuccess();
 
             return ToType<List<TestCycle>>(response.ResponseBody.ContentString);
@@ -1151,7 +1228,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
             if (priorityId <= 0) throw new Exception($"The request to search a priority does not contain priority id");
 
             Log($"Request to get priority by id [{priorityId}]");
-            
+
             var response = OpenRequest($"/{ZephyrApiVersion}/priorities/{priorityId}")
                 .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
@@ -1188,7 +1265,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
         protected Pagination<Priority> PrioritiesGet(IDictionary<string, string> request)
         {
             Log($"Request to get status list using [{string.Join(",", request?.Where(s => s.Value.HasValue()).Select(s => $"[{s.Key}, {s.Value}]"))}]");
-            
+
             var response = OpenRequest($"/{ZephyrApiVersion}/priorities")
                 .SetQueryParams(request)
                 .SetTimeout(RequestTimeoutInSeconds)

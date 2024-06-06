@@ -93,6 +93,21 @@ namespace ZephyrScale.RestApi.Service.Cloud
         dynamic TestCaseCustomFieldName(string projectKey);
 
         /// <summary>
+        /// Returns the total number of test cases available in the project
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <returns></returns>
+        long TestCaseCountGet(string projectKey);
+
+        /// <summary>
+        /// Returns the total number of execution within a test case
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <param name="testCase"></param>
+        /// <returns></returns>
+        long TestCaseExecutionCountGet(string projectKey, string testCase);
+
+        /// <summary>
         /// Returns a folder for the given ID
         /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/getFolder
         /// </summary>
@@ -224,6 +239,21 @@ namespace ZephyrScale.RestApi.Service.Cloud
         IEnumerable<string> TestCycleCustomFieldNames(string projectKey);
 
         /// <summary>
+        /// Returns the count of cycle available in the project
+        /// </summary>
+        /// <param name="projectKey">Jira project key</param>
+        /// <returns></returns>
+        long TestCycleCountGet(string projectKey);
+
+        /// <summary>
+        /// Returns the count of execution within a cycle
+        /// </summary>
+        /// <param name="projectKey">Jira project key</param>
+        /// <param name="testCycle">Cycle key</param>
+        /// <returns></returns>
+        long TestCycleExecutionCountGet(string projectKey, string testCycle);
+
+        /// <summary>
         /// Creates a test execution. All required test execution custom fields should be present in the request
         /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/createTestExecution
         /// </summary>
@@ -273,6 +303,13 @@ namespace ZephyrScale.RestApi.Service.Cloud
             bool breakSearchOnFirstConditionValid = true,
             long? jiraProjectVersionId = null,
             bool? onlyLastExecutions = null);
+
+        /// <summary>
+        /// Get the total count of execution within a project
+        /// </summary>
+        /// <param name="projectKey">Jira project key</param>
+        /// <returns></returns>
+        long TestExecutionCountGet(string projectKey);
 
         /// <summary>
         /// Returns a status for the given ID.
