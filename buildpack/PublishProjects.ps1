@@ -1,7 +1,7 @@
 ﻿Set-ExecutionPolicy Bypass
 
 $apiKey = [System.Environment]::GetEnvironmentVariable('NugetApiKey', 'User')
-$packageVersion = '.1.0.0.20.nupkg'
+$packageVersion = '.1.0.3.nupkg'
 
 $zephyr = [IO.Path]::Combine($PSScriptRoot, '..\Output\ZephyrScale.Rest.Sdk' + $packageVersion)
 

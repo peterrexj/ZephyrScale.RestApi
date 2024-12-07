@@ -19,16 +19,12 @@
 		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageReleaseNotes>First Release - Rest Endpoints - Cloud and Server</PackageReleaseNotes>
 		<Description>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/product-description.txt"))</Description>
-		<Version>1.0.0.19</Version>
+		<Version>1.0.2</Version>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Company>Peter Joseph</Company>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="TestAny.Essentials.Api" Version="1.0.6" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Dtos\Jira\" />
@@ -43,6 +39,10 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Selenium.Essentials\src\TestAny.Essentials.Api\TestAny.Essentials.Api.csproj" />
 	</ItemGroup>
 
 </Project>

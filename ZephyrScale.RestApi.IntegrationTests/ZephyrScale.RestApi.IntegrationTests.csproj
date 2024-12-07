@@ -15,15 +15,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jira.Rest.Sdk" Version="1.0.1.10" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Pj.Library.Secure" Version="1.0.4.31" />
-    <PackageReference Include="TestAny.Essentials.Api" Version="1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Jira.Rest.Sdk\Jira.Rest.Sdk\Jira.Rest.Sdk.csproj" />
+    <ProjectReference Include="..\..\PjLibrary\Pj.Library.Secure\Pj.Library.Secure.csproj" />
+    <ProjectReference Include="..\..\Selenium.Essentials\src\TestAny.Essentials.Api\TestAny.Essentials.Api.csproj" />
     <ProjectReference Include="..\ZephyrScale.RestApi\ZephyrScale.RestApi.csproj" />
   </ItemGroup>
 
