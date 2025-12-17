@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ZephyrScale.RestApi.Dtos.Cloud
 {
@@ -36,7 +34,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
 
         [JsonProperty("ownerId")]
         public string OwnerId { get; set; }
-
+    
         [JsonProperty("labels")]
         public List<string> Labels { get; set; }
 

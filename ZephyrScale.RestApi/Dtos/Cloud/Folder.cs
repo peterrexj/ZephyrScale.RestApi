@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ZephyrScale.RestApi.Dtos.Cloud
 {
@@ -28,6 +25,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
         [JsonProperty("project")]
         public Project Project { get; set; }
 
+        [JsonProperty("fullPath")]
         public string FullPath { get; set; }
     }
 }

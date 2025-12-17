@@ -299,6 +299,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
             }.GetPropertyValuesV2(), TestExecutionsGet);
         }
 
+
         #endregion
 
         #region Folder
@@ -519,13 +520,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             return string.Empty;
         }
-        //public void DeleteFolder(string folderId)
-        //{
-        //    //if (folderId.IsEmpty()) return null;
-        //    var jiraResponse = OpenRequest($"/v2/folders/{folderId}")
-        //       .Delete();
-        //    jiraResponse.AssertResponseStatusForSuccess();
-        //}
+
         #endregion
 
         #region Test Cycle
@@ -756,6 +751,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
             }.GetPropertyValuesV2(), TestExecutionsGet);
         }
 
+
         #endregion
 
         #region Test Execution
@@ -804,6 +800,41 @@ namespace ZephyrScale.RestApi.Service.Cloud
             var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions/{testExecutionIdOrKey}")
                 .SetTimeout(RequestTimeoutInSeconds)
                 .GetWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<TestExecution>(response.ResponseBody.ContentString);
+        }
+
+        /// <summary>
+        /// Updates an existing test execution. If the project has test execution custom fields, all custom fields should be present in the request. To leave any of them blank, please set them null if they are not required custom fields.
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/updateTestExecution
+        /// </summary>
+        /// <param name="request">The test execution object with updated values</param>
+        /// <returns>The updated test execution</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
+        public TestExecution TestExecutionUpdate(TestExecution request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.Id.HasValue == false || request.Id.Value == 0) throw new Exception($"The request to update a test execution does not contain Test Execution Id");
+            if (request.Key.IsEmpty()) throw new Exception($"The request to update a test execution does not contain Test Execution key");
+            if (request.Project == null) throw new ArgumentNullException(nameof(request.Project));
+            if (request.Project.Id.HasValue == false || request.Project.Id.Value == 0) throw new Exception($"The request to update a test execution does not contain Project Id");
+            if (request.TestCase == null) throw new ArgumentNullException(nameof(request.TestCase));
+            if (request.TestCase.Id.HasValue == false || request.TestCase.Id.Value == 0) throw new Exception($"The request to update a test execution does not contain Test Case Id");
+            if (request.TestExecutionStatus == null) throw new ArgumentNullException(nameof(request.TestExecutionStatus));
+            if (request.TestExecutionStatus.Id.HasValue == false || request.TestExecutionStatus.Id.Value == 0) throw new Exception($"The request to update a test execution does not contain Test Execution Status Id");
+
+            Log($"Request to update test execution with key {request.Key}");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions/{request.Key}")
+                .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
+                .PutWithRetry(assertOk: AssertResponseStatusOk,
                     timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
                     retryOption: RequestRetryTimes,
                     httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
@@ -884,6 +915,37 @@ namespace ZephyrScale.RestApi.Service.Cloud
                 projectKey,
             }.GetPropertyValuesV2(), TestExecutionsGet);
         }
+
+
+        /// <summary>
+        /// Creates a link between a test execution and a Jira issue
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/createTestExecutionIssueLink
+        /// </summary>
+        /// <param name="testExecutionIdOrKey"></param>
+        /// <param name="issueId"></param>
+        /// <exception cref="Exception"></exception>
+        public void TestExecutionLinkCreate(string testExecutionIdOrKey, long issueId)
+        {
+            if (testExecutionIdOrKey.IsEmpty()) throw new Exception($"The request to create a test execution link does not contain test execution id");
+            if (issueId <= 0) throw new Exception($"The request to create a test execution link does not contain issue id");
+
+            Log($"Request to create test execution link between test execution key [{testExecutionIdOrKey}] and issue id [{issueId}]");
+
+            var body = new
+            {
+                issueId
+            };
+            var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions/{testExecutionIdOrKey}/links/issues")
+                .SetTimeout(RequestTimeoutInSeconds)
+                .SetJsonBody(body)
+                .PostWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+            response.AssertResponseStatusForSuccess();
+        }
+
         #endregion
 
         #region Status
@@ -950,6 +1012,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<Status>>(response.ResponseBody.ContentString);
         }
+
         #endregion
 
         #region Environment
@@ -1016,6 +1079,65 @@ namespace ZephyrScale.RestApi.Service.Cloud
             response.AssertResponseStatusForSuccess();
             return ToType<Environment>(response.ResponseBody.ContentString);
         }
+
+        /// <summary>
+        /// Creates a new environment
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/createEnvironment
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
+        public Environment EnvironmentCreate(EnvironmentCreateRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.ProjectKey.IsEmpty()) throw new Exception($"The request to create an environment does not contain project key");
+            if (request.Name.IsEmpty()) throw new Exception($"The request to create an environment does not contain environment name");
+
+            Log($"Request to create environment with name [{request.Name}] under project [{request.ProjectKey}]");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/environments")
+                .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
+                .PostWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<Environment>(response.ResponseBody.ContentString);
+        }
+
+        /// <summary>
+        /// Updates an existing environment
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/updateEnvironment
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
+        public Environment EnvironmentUpdate(Environment environment)
+        {
+            if (environment == null) throw new ArgumentNullException(nameof(environment));
+            if (environment.Id.HasValue == false || environment.Id.Value == 0) throw new Exception($"The request to update an environment does not contain environment id");
+            if (environment.Name.IsEmpty()) throw new Exception($"The request to update an environment does not contain environment name");
+
+            Log($"Request to update environment with id [{environment.Id}] and name [{environment.Name}]");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/environments/{environment.Id}")
+                .SetJsonBody(environment)
+                .SetTimeout(RequestTimeoutInSeconds)
+                .PutWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<Environment>(response.ResponseBody.ContentString);
+        }
+
         #endregion
 
         #region Project
@@ -1086,14 +1208,6 @@ namespace ZephyrScale.RestApi.Service.Cloud
         #endregion
 
         #region Links
-        public void LinkDelete(string linkId)
-        {
-            Log($"Warning: Trying to delete the link {linkId}");
-
-            var response = OpenRequest($"/{ZephyrApiVersion}/links/{linkId}").Delete();
-
-            response.AssertResponseStatusForSuccess();
-        }
         #endregion
 
         #region Search
@@ -1213,6 +1327,24 @@ namespace ZephyrScale.RestApi.Service.Cloud
 
             return ToType<List<TestCase>>(response.ResponseBody.ContentString);
         }
+
+        public Links TestExecutionLinksGet(string testExecutionIdOrKey)
+        {
+            if (testExecutionIdOrKey.IsEmpty()) throw new Exception($"The request to search a test execution link does not contain test execution id");
+
+            Log($"Request to get test execution links by key [{testExecutionIdOrKey}]");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/testexecutions/{testExecutionIdOrKey}/links")
+                .SetTimeout(RequestTimeoutInSeconds)
+                .GetWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<Links>(response.ResponseBody.ContentString);
+        }
         #endregion
 
         #region Priorities
@@ -1278,6 +1410,114 @@ namespace ZephyrScale.RestApi.Service.Cloud
             response.AssertResponseStatusForSuccess();
             return ToType<Pagination<Priority>>(response.ResponseBody.ContentString);
         }
+
         #endregion
+
+        #region Test Plans
+        /// <summary>
+        /// Creates a test plan. All required test plan custom fields should be present in the request.
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/createTestPlan
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
+        public TestPlan TestPlanCreate(TestPlanCreateRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.ProjectKey.IsEmpty()) throw new Exception($"The request to create a test plan does not contain project key");
+            if (request.Name.IsEmpty()) throw new Exception($"The request to create a test plan does not contain test plan name");
+
+            Log($"Request to create test plan with name [{request.Name}] under project [{request.ProjectKey}]");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/testplans")
+                .SetJsonBody(request)
+                .SetTimeout(RequestTimeoutInSeconds)
+                .PostWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<TestPlan>(response.ResponseBody.ContentString);
+        }
+
+        /// <summary>
+        /// Returns a test plan for the given key or ID
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/getTestPlan
+        /// </summary>
+        /// <param name="testPlanIdOrKey"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public TestPlan TestPlanGet(string testPlanIdOrKey)
+        {
+            if (testPlanIdOrKey.IsEmpty()) throw new Exception($"The request to search a test plan does not contain test plan id");
+
+            Log($"Request to get test plan by key [{testPlanIdOrKey}]");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/testplans/{testPlanIdOrKey}")
+                .SetTimeout(RequestTimeoutInSeconds)
+                .GetWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<TestPlan>(response.ResponseBody.ContentString);
+        }
+
+        /// <summary>
+        /// Returns the list of test plans based on the search request
+        /// https://support.smartbear.com/zephyr-scale-cloud/api-docs/#operation/listTestPlans
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Pagination<TestPlan> TestPlansGet(SearchRequestBase request) => TestPlansGet(request.GetPropertyValuesV2());
+        protected Pagination<TestPlan> TestPlansGet(IDictionary<string, string> request)
+        {
+            Log($"Request to get test plan list using [{string.Join(",", request?.Where(s => s.Value.HasValue()).Select(s => $"[{s.Key}, {s.Value}]"))}]");
+
+            var response = OpenRequest($"/{ZephyrApiVersion}/testplans")
+                .SetQueryParams(request)
+                .SetTimeout(RequestTimeoutInSeconds)
+                .GetWithRetry(assertOk: AssertResponseStatusOk,
+                    timeToSleepBetweenRetryInMilliseconds: TimeToSleepBetweenRetryInMilliseconds,
+                    retryOption: RequestRetryTimes,
+                    httpStatusCodes: ListOfResponseCodeOnFailureToRetry,
+                    retryOnRequestTimeout: RetryOnRequestTimeout);
+
+            response.AssertResponseStatusForSuccess();
+            return ToType<Pagination<TestPlan>>(response.ResponseBody.ContentString);
+        }
+
+        /// <summary>
+        /// Returns all test plans. Query parameters can be used to filter by project and folder.
+        /// Use predicate to streamline your result, for example: (t) => t.Name.EqualsIgnoreCase("test")
+        /// Use [breakSearchOnFirstConditionValid] if you want break the search once the match is found. This can improve performance when searching for specific item
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <param name="folderId"></param>
+        /// <param name="predicate"></param>
+        /// <param name="breakSearchOnFirstConditionValid"></param>
+        /// <returns></returns>
+        public List<TestPlan> TestPlansGetFull(string projectKey, long? folderId = null,
+            Func<TestPlan, bool> predicate = null, bool breakSearchOnFirstConditionValid = true)
+            => SearchFull(new TestSearchRequest { projectKey = projectKey, folderId = folderId }.GetPropertyValuesV2(),
+                TestPlansGet, predicate, breakSearchOnFirstConditionValid).ToList();
+
+        /// <summary>
+        /// Returns the total number of test plans available in the project
+        /// </summary>
+        /// <param name="projectKey"></param>
+        /// <returns></returns>
+        public long TestPlanCountGet(string projectKey)
+        {
+            return SearchCount(new SearchRequestBase { projectKey = projectKey }.GetPropertyValuesV2(), TestPlansGet);
+        }
+
+        #endregion
+
     }
 }

@@ -3,9 +3,12 @@ using NUnit.Framework;
 using Pj.Library;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ZephyrScale.RestApi.Dtos.Cloud;
 using ZephyrScale.RestApi.IntegrationTests.Configs;
 using ZephyrScale.RestApi.Service.Cloud;
+using Environment = System.Environment;
 
 namespace ZephyrScale.RestApi.IntegrationTests
 {
@@ -15,7 +18,7 @@ namespace ZephyrScale.RestApi.IntegrationTests
         protected JiraService _jiraService;
         protected string _jiraProjectKey => Configs.Configurations.JiraProjectKey;
 
-        public static void EnableProxyOnJiraZephyrService()
+        private static void EnableProxyOnJiraZephyrService()
         {
             if (Configurations.RequestProxyIsEnabled)
             {
@@ -59,6 +62,42 @@ namespace ZephyrScale.RestApi.IntegrationTests
 
             Assert.IsTrue(_zephyrService.CanConnect);
             Assert.IsTrue(_jiraService.CanConnect);
+        }
+        
+        
+        protected TestCaseCreateRequest CreateValidTestCaseRequest(string? name = null)
+        {
+            return new TestCaseCreateRequest
+            {
+                ProjectKey = _jiraProjectKey,
+                Name = name ?? $"Integration Test Case {DateTimeEx.GetDateTimeReadable()}",
+                Objective = $"Integration test objective for {name}",
+                Precondition = "Test preconditions",
+                // ... other properties ...
+                CustomFields = new Dictionary<string, object>
+                {
+                    { "Method", "Automated" },
+                    { "TestLevel", "ST" }
+                }
+            };
+        }
+        
+        protected TestExecutionCreateRequest CreateValidTestExecutionRequest(string testCaseKey)
+        {
+            // Get available statuses and use the first one
+            var statuses = _zephyrService.StatusesGetFull(_jiraProjectKey);
+            var defaultStatus = statuses?.FirstOrDefault();
+
+            return new TestExecutionCreateRequest
+            {
+                ProjectKey = _jiraProjectKey,
+                TestCaseKey = testCaseKey,
+                StatusName = defaultStatus?.Name ?? "Not Executed",
+                Comment = $"Integration test execution created at {DateTimeEx.GetDateTimeReadable()}",
+                ExecutionTime = 3600, // 1 hour in seconds
+                ExecutedById = null, // Will use current user
+                AssignedToId = null
+            };
         }
     }
 }
