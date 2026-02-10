@@ -17,7 +17,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
         public string Url { get; set; }
 
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; set; }

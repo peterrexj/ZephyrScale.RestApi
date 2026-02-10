@@ -8,7 +8,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
     public class TestExecution
     {
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("key")]
         public string Key { get; set; }

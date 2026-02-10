@@ -21,7 +21,7 @@ namespace ZephyrScale.RestApi.Dtos.Cloud
         public int? EstimatedTime { get; set; }
 
         [JsonProperty("componentId")]
-        public int? ComponentId { get; set; }
+        public long? ComponentId { get; set; }
 
         [JsonProperty("priorityName")]
         public string PriorityName { get; set; }
