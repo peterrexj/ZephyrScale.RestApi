@@ -67,7 +67,7 @@ namespace ZephyrScale.RestApi.Service.OnPrem
                 throw new Exception($"The url to the {_appName} is not in the correct format");
             }
 
-            ZeypherUrl = appUrl.GetDomain();
+            ZeypherUrl = BuildBaseUrl(appUrl);
             ZephyrApiVersion = zephyrApiVersion.ReplaceMultiple("", "/", @"\");
             JiraApiVersion = jiraApiVersion.ReplaceMultiple("", "/", @"\");
             _username = serviceUsername;

@@ -28,6 +28,14 @@ namespace ZephyrScale.RestApi.Service
         protected int RequestTimeoutInSeconds;
         protected HttpStatusCode[] ListOfResponseCodeOnFailureToRetry;
 
+        protected static string BuildBaseUrl(string appUrl)
+        {
+            var uri = new Uri(appUrl.StartsWith("http") ? appUrl : "https://" + appUrl);
+            return uri.Port > 0
+                ? $"{uri.Scheme}://{uri.Host}:{uri.Port}"
+                : $"{uri.Scheme}://{uri.Host}";
+        }
+
         protected void Log(string message) => PjUtility.Log($"{_logPrefix}{message}");
         protected static T ToType<T>(dynamic content) => SerializationHelper.ToType<T>(content);
         protected static T ToType<T>(string content) => SerializationHelper.ToType<T>(content);

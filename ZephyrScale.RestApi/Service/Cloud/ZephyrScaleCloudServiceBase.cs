@@ -57,7 +57,7 @@ namespace ZephyrScale.RestApi.Service.Cloud
                 throw new Exception($"The url to the {_appName} is not in the correct format");
             }
 
-            ZeypherUrl = appUrl.GetDomain();
+            ZeypherUrl = BuildBaseUrl(appUrl);
             ZephyrApiVersion = restApiVersion.ReplaceMultiple("", "/", @"\");
             _apiKey = passwordAuthKey;
             FolderSeparator = folderSeparator;
